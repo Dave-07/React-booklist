@@ -14,7 +14,6 @@ const BookForm = () => {
         const len = books.length;
         const randNum = Math.floor(Math.random() * len) + 1;
         const randBook = books[randNum];
-
         dispatch(addBook(createBookWithID(randBook)));
     }
 
@@ -22,7 +21,6 @@ const BookForm = () => {
         e.preventDefault();
 
         if (title && author) {
-            
             dispatch(addBook(createBookWithID({ title, author })));
             setTitle('');
             setAuthor('');
