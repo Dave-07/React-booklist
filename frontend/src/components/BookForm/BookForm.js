@@ -7,23 +7,23 @@ import books from '../../data/books.json';
 import createBookWithID from '../../utils/createBookWithID';
 
 
-const BookForm = () => {
+const BookForm = () => { 
     const [title, setTitle] = useState('');
     const [author, setAuthor] = useState('');
     const dispatch = useDispatch();
-
-    const handleAddRandomBook = () => {
+ 
+    const handleAddRandomBook = () => { 
         const len = books.length;
         const randNum = Math.floor(Math.random() * len) + 1;
         const randBook = books[randNum];
-        dispatch(addBook(createBookWithID(randBook)));
+        dispatch(addBook(createBookWithID(randBook, 'random')));
     }
-
+ 
     const handleSubmit = e => {
         e.preventDefault();
 
         if (title && author) {
-            dispatch(addBook(createBookWithID({ title, author })));
+            dispatch(addBook(createBookWithID({ title, author }, 'manual')));
             setTitle('');
             setAuthor('');
         }
@@ -40,7 +40,7 @@ const BookForm = () => {
                 return;
             }
 
-            dispatch(addBook(createBookWithID(apiBook)));
+            dispatch(addBook(createBookWithID(apiBook, 'API')));
 
         } catch (err) {
             console.error('Failed to fetch random book:', err)
