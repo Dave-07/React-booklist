@@ -68,7 +68,6 @@ const BookList = () => {
         : <p>No book available</p>;
 
 
-
     return (
         <div className="app-block book-list">
             <h2>Book List</h2>
