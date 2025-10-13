@@ -59,3 +59,7 @@
     transition: color 0.3s ease;
     color: #fca510;
 }
+
+.highlight {
+    background-color: yellow;
+}

@@ -25,6 +25,20 @@ const BookList = () => {
         return titleMatch && authorMatch && favoriteMatch;
     });
 
+    const hightLightMatch = (text, filter) => {
+        if (!filter) return text;
+
+        const reg = new RegExp(`(${filter})`, 'gi');
+
+        return text.split(reg).map((part, i) => {
+            if (part.toLowerCase() === filter.toLowerCase()) {
+                return (
+                    <span key={i} className='highlight'>{part}</span>
+                )
+            }
+            return part;
+        });
+    }
 
     const msg = books.length > 0
         ? <ul>
@@ -32,7 +46,7 @@ const BookList = () => {
                 return (
                     <li key={book.id}>
                         <div className='book-info'>
-                            {++i}. {book.title} by <strong>{book.author}</strong>
+                            {++i}. {hightLightMatch(book.title, titleFilter)} by <strong>{hightLightMatch(book.author, authorFilter)}</strong>
                         </div>
                         <div className='book-action'>
                             <span onClick={() => handleToggleFavorite(book.id)}>
@@ -51,6 +65,8 @@ const BookList = () => {
             })}
         </ul>
         : <p>No book available</p>;
+
+
 
     return (
         <div className="app-block book-list">
