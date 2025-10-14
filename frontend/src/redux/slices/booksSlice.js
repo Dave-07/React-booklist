@@ -31,7 +31,7 @@ const booksSlice = createSlice({
             if (book) book.isFavorite = !book.isFavorite;
         }
     },
-    extraReducers: (builder) => {
+    extraReducers: builder => {
         builder.addCase(fetchBook.fulfilled, (state, action) => {
 
             const apiBook = action.payload;
