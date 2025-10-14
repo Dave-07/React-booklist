@@ -4,7 +4,10 @@ import createBookWithID from '../../utils/createBookWithID';
 import books from '../../data/books.json';
 import { setError } from './errorSlice';
 
-const initialState = [];
+const initialState = {
+    books: [],
+    isLoadingViaAPI: false
+};
 
 export const fetchBook = createAsyncThunk('books/fetchBook', async (url, thunkAPI) => {
     try {
@@ -12,7 +15,7 @@ export const fetchBook = createAsyncThunk('books/fetchBook', async (url, thunkAP
         return resp.data;
     } catch (error) {
         thunkAPI.dispatch(setError(error.message));
-        throw error;
+        return thunkAPI.rejectWithValue(error);
     }
 });
 
@@ -21,35 +24,51 @@ const booksSlice = createSlice({
     initialState,
     reducers: {
         addBook: (state, action) => {
-            state.push(action.payload);
+            state.books.push(action.payload);
         },
         deleteBook: (state, action) => {
-            return state.filter(book => book.id !== action.payload);
+            return {
+                ...state,
+                books: state.books.filter(book => book.id !== action.payload)
+            }
         },
         toggleFavorite: (state, action) => {
-            const book = state.find(b => b.id === action.payload);
+            const book = state.books.find(b => b.id === action.payload);
             if (book) book.isFavorite = !book.isFavorite;
         }
     },
     extraReducers: builder => {
-        builder.addCase(fetchBook.fulfilled, (state, action) => {
+        builder
+            .addCase(fetchBook.pending, (state) => {
+                state.isLoadingViaAPI = true;
+            })
 
-            const apiBook = action.payload;
-            const expectedProps = Object.keys(books[0]);
-            const hasAll = expectedProps.every(prop => Object.hasOwn(apiBook, prop));
-            if (!hasAll) {
-                console.warn('API fetched book missing some properties: ', apiBook);
-                return;
-            }
+            .addCase(fetchBook.fulfilled, (state, action) => {
+                const apiBook = action.payload;
+                const expectedProps = Object.keys(books[0]);
+                const hasAll = expectedProps.every(prop => Object.hasOwn(apiBook, prop));
+                state.isLoadingViaAPI = false;
 
-            state.push(createBookWithID(apiBook, 'API'));
-        });
+                if (!hasAll) {
+                    console.warn('API fetched book missing some properties: ', apiBook);
+                    return;
+                }
+
+                state.books.push(createBookWithID(apiBook, 'API'));
+            })
+
+            .addCase(fetchBook.rejected, (state) => {
+                state.isLoadingViaAPI = false;
+            })
+
+
     }
 });
 
 export const { addBook, deleteBook, toggleFavorite } = booksSlice.actions;
 
-export const selectBooks = state => state.books;
+export const selectBooks = state => state.books.books;
+export const selectIsLoadingViaAPI = state => state.books.isLoadingViaAPI;
 
 export default booksSlice.reducer;
 
