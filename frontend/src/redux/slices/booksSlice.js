@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import createBookWithID from '../../utils/createBookWithID';
+import {API_BASE} from '../../utils/API_base';
 import books from '../../data/books.json';
 import { setError } from './errorSlice';
 
@@ -9,9 +10,9 @@ const initialState = {
     isLoadingViaAPI: false
 };
 
-export const fetchBook = createAsyncThunk('books/fetchBook', async (url, thunkAPI) => {
+export const fetchBook = createAsyncThunk('books/fetchBook', async (_, thunkAPI) => {
     try {
-        const resp = await axios.get(url);
+        const resp = await axios.get(`${API_BASE}/random-book-delayed`);
         return resp.data;
     } catch (error) {
         thunkAPI.dispatch(setError(error.message));
