@@ -12,6 +12,10 @@ function getRandomBook() {
   return randomBook;
 }
 
+app.get('/', (req, res) => {
+  res.redirect('/random-book-delayed');
+});
+
 app.get('/random-book', (req, res) => {
   res.json(getRandomBook());
 });
@@ -19,7 +23,7 @@ app.get('/random-book', (req, res) => {
 app.get('/random-book-delayed', (req, res) => {
   setTimeout(() => {
     res.json(getRandomBook());
-  }, 3000);
+  }, 1500);
 });
 
 const port = process.env.PORT || 4000;
