@@ -8,6 +8,13 @@ import createBookWithID from '../../utils/createBookWithID';
 import { setError } from "../../redux/slices/errorSlice";
 
 
+
+const API_BASE =
+  process.env.NODE_ENV === "production"
+    ? "https://react-booklist-production.up.railway.app"
+    : "http://localhost:4000";
+    
+
 const BookForm = () => {
     const [title, setTitle] = useState('');
     const [author, setAuthor] = useState('');
@@ -34,7 +41,7 @@ const BookForm = () => {
     }
 
     const handleAddRandomBookViaAPI = () => {
-        dispatch(fetchBook('http://localhost:4000/random-book-delayed'));
+        dispatch(fetchBook(`${API_BASE}/random-book-delayed`));
     }
 
     return (
